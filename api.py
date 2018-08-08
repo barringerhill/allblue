@@ -14,17 +14,28 @@ class Block:
         info = json.loads(res.text)
         txids = info.get("txids");        
         internal_txids = info.get("internal_txids");
-        txids.extend(internal_txids);
+
+        if internal_txids:
+            txids.extend(internal_txids);
+
         return txids;
 
 class Tx:
-    def tx_api(tx):
-        return "https://api.blockcypher.com/v1/eth/main/txs/" + str(tx);
+    def __init__(self, tx):
+        self.txids = txids;
+
+    def get_api(self, tx):
+        return "https://api.blockcypher.com/v1/eth/main/txs/" + tx;
+        
+    def get_script(self):
+        print(txids);
+        return r.get(self.get_api(txids[0])).text;
 
 
-b = Block(3500000);
-print(b.get_tx());
+# test
+block = Block(6109000);
+txids = block.get_tx();
+txs = Tx(txids);
 
-# res = r.get(block_api(1));
-# print(res.text);
-# print(json.loads(res.text).get("outputs")[0].get("script"));
+print(txs.get_script());
+
