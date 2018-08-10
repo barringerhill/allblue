@@ -1,41 +1,82 @@
+from lxml import etree;
 import requests as r;
 import json;
+import re;
 
 class Block:
 
     def __init__(self, height):
         self.height = height;
+        self.html = None;
+        self.txs_n = None;
+        self.inner_txs_n = None;
 
-    def get_api(self):
-        return "https://api.blockcypher.com/v1/eth/main/blocks/" + str(self.height) + "?txstart=0\u0026limit=500";
+    def init(self):
+        self.get_html();
+        self.get_txs_n();
+        self.get_inner_txs_n();
         
-    def get_tx(self):
-        res = r.get(self.get_api());
-        info = json.loads(res.text)
-        txids = info.get("txids");        
-        internal_txids = info.get("internal_txids");
+    def get_html(self):
+        txs_api = "https://etherscan.io/block/" + str(self.height);
+        html = etree.HTML(r.get(txs_api).text);
 
-        if internal_txids:
-            txids.extend(internal_txids);
+        self.html = html;
 
-        return txids;
+    def get_txs_n(self):
+        if self.html is None: self.get_html();
+        html = self.html;
+        txs_n = re.compile("[1-9]\d").findall(str(
+            html.xpath("//a[@title = 'Click to View Transactions']//text()")
+        ))[0];
 
-class Tx:
-    def __init__(self, tx):
-        self.txids = txids;
+        self.txs_n = txs_n;
 
-    def get_api(self, tx):
-        return "https://api.blockcypher.com/v1/eth/main/txs/" + tx;
-        
-    def get_script(self):
-        print(txids);
-        return r.get(self.get_api(txids[0])).text;
+    def get_inner_txs_n(self):
+        if self.html is None: self.get_html();
+        html = self.html;
+        inner_txs_n = re.compile("[1-9]\d").findall(str(
+            html.xpath("//a[@title = 'Click to View Internal Transactions']//text()");
+        ))[0];
 
+        self.inner_txs_n = inner_txs_n;
+
+    def get_txs(self):
+        pages = (int(self.txs_n) // 50) + 1;
+        txs = html.xpath("//a[@title = 'Click to View Internal Transactions']//text()");
+        print(pages);
 
 # test
-block = Block(6109000);
-txids = block.get_tx();
-txs = Tx(txids);
+def test_block():
+    block = Block(6115134);
+    block.init();
+    print(block.txs_n);
+    print(block.inner_txs_n);
 
-print(txs.get_script());
+test_block();
+
+# # # # # # # # # # # # # # # # # # 
+#
+# class Tx:
+#     def __init__(self, txids):
+#         self.txids = txids;
+# 
+#     def get_script(self, tx):
+#         tx_api = "https://api.blockcypher.com/v1/eth/main/txs/" + tx;
+#         j = r.get(tx_api).text;
+#         outputs = json.loads(j).get("outputs")[0];
+#         script = outputs.get("script");
+#         
+#         if script:
+#             return script;
+#         return;
+# 
+#     def scripts(self):
+#         scripts = [];
+#         for tx in txids:
+#             scripts.append(self.get_script(tx));
+# 
+#         return scripts;
+#
+# # # # # # 
+
 
