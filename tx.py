@@ -1,7 +1,10 @@
 from lxml import etree;
+from progressbar import *
+
 import requests as r;
 
 import json;
+import random;
 import re;
 import time;
 
@@ -55,11 +58,13 @@ class Block:
     def get_contents(self):
         tx_api = "https://etherscan.io/tx/";
         contents = [];
-        for tx in self.txs:
+        progress = ProgressBar();
+        
+        for tx in progress(self.txs):
             html = etree.HTML(r.get(tx_api + str(self.txs[0])).text);
             input_data = html.xpath("//span[@id = 'rawinput']//text()");
             contents.append(str(input_data[0]));
-            time.sleep(math.floor(random.random() * 8));
+            time.sleep(math.floor(random.random() * 5));
             
         return contents;
 
@@ -71,6 +76,6 @@ def test_block():
     print(block.time);    
     print(block.txs_n);
     print(block.inner_txs_n);
-#    print(block.get_contents());
+    print(block.get_contents());
 
 test_block();
