@@ -1,5 +1,6 @@
 import tx;
 import db;
+from progress.bar import Bar;
 
 def fetch_block(height):
     block = tx.Block(height);
@@ -10,15 +11,17 @@ def fetch_tx(block):
     block.get_contents();
     return block;
 
-def fetch():
+def store_blocks():
     db.FoxDB().init();    
     db.FoxDB().start();
     
     local_height = db.Block.select().count();
     remote_height = int(tx.Block().get_last()[0]);    
-    
-    for i in range(local_height, remote_height):
-        print(i);
+
+    if db.Block.get(db.Block.height == local_height).finished == 1:
+        local_height += 1;
+
+    for i in Bar('Stored Blocks:').iter(range(local_height, remote_height)):
         block = fetch_block(i);
         db.Block.create(
             height = block.height,
@@ -28,13 +31,12 @@ def fetch():
             txs = block.txs,
             finished = 1,
         )
-        print(block.height);
+        # print("Store Block", block.height, "...");
 
-fetch();
-
+store_blocks();
 def test():
     t = db.Block.select();
     for i in t:
         print(i.time)
 
-test();
+# test();

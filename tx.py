@@ -1,5 +1,5 @@
 from lxml import etree;
-from progressbar import *
+from progress.bar import Bar;
 
 import requests as r;
 
@@ -67,9 +67,8 @@ class Block:
     def get_contents(self):
         tx_api = "https://etherscan.io/tx/";
         contents = [];
-        progress = ProgressBar();
         
-        for tx in progress(self.txs):
+        for tx in Bar('Fetch Txs:').iter(self.txs):
             html = etree.HTML(r.get(tx_api + str(self.txs[0])).text);
             input_data = html.xpath("//span[@id = 'rawinput']//text()");
             contents.append(str(input_data[0]));
