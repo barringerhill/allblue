@@ -10,12 +10,12 @@ import time;
 
 class Block:
 
-    def __init__(self, height):
+    def __init__(self, height = 0):
         self.height = height;
-        self.time = None;
-        self.txs = None;        
-        self.txs_n = None;
-        self.inner_txs_n = None;
+        self.time = "";
+        self.txs = 0;        
+        self.txs_n = 0;
+        self.inner_txs_n = 0;
 
     def init_tx(self):
         self.__get_txs_n();
@@ -28,22 +28,31 @@ class Block:
         time = re.compile("\(\S*\s\S*").search(str(
             html.xpath("//div[@id = 'ContentPlaceHolder1_maintable']//div[4]//text()")
         ))[0][1:];
-        
+
         # txs_n
-        txs_n = re.compile("[1-9]\d").findall(str(
-            html.xpath("//a[@title = 'Click to View Transactions']//text()")
-        ))[0];
+        try:
+            txs_n = re.compile("[1-9]\d").findall(str(
+                html.xpath("//a[@title = 'Click to View Transactions']//text()")
+            ))[0];
+        except: txs_n = 0;
 
         # inner_txs_n
-        inner_txs_n = re.compile("[1-9]\d").findall(str(
-            html.xpath("//a[@title = 'Click to View Internal Transactions']//text()")
-        ))[0];
-
+        try:
+            inner_txs_n = re.compile("[1-9]\d").findall(str(
+                html.xpath("//a[@title = 'Click to View Internal Transactions']//text()")
+            ))[0];
+        except: inner_txs_n = 0;
+        
+        
         self.time = str(time);
         self.txs_n = txs_n;
         self.inner_txs_n = inner_txs_n;
 
     def __get_txs(self):
+        if self.txs_n == 0:
+            self.txs = [];
+            return;
+        
         pages = (int(self.txs_n) // 50) + 1;
         api = "https://etherscan.io/txs?block=" + str(self.height) + "&p="
         txs = [];
@@ -68,6 +77,12 @@ class Block:
             
         return contents;
 
+    def get_last(self):
+        api = "https://etherscan.io/";
+        html = etree.HTML(r.get(api).text);
+        return html.xpath("//span[@id = 'ContentPlaceHolder1_Label1']//font//text()");
+
+
 # test
 def test_block():
     block = Block(6115134);
@@ -78,4 +93,4 @@ def test_block():
     print(block.inner_txs_n);
     print(block.get_contents());
 
-test_block();
+# test_block();
