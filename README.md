@@ -1,13 +1,8 @@
-### Snail
 
-fetch the data from Ethereum.
+2 ways 2 exchange data
+======================
 
 
++ fetch data from etherscan.io
 
-### CLass
-
-Block
-
-https://api.blockcypher.com/v1/eth/main/blocks/7
-
-+ 
++ fetch data from geth

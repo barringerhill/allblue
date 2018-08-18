@@ -1,0 +1,4 @@
+peewee==3.6.4
+lxml==4.2.4
+progress==1.4
+requests==2.19.1

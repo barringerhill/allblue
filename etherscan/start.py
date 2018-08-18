@@ -38,17 +38,19 @@ def store_blocks():
         )
 
 
-def mian():
+def main():
     while True:
         try:
             store_blocks();
         except:
             continue;
 
-main();
+# main();
 
+# TEST
 def test():
-    t = db.Block.select().count();
-    print(t);
+    t = db.Block.select();
+    for b in t:
+        print(b.txs_n)
 
-# test();
+test();
