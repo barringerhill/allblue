@@ -1,22 +1,26 @@
 from peewee import *;
 
-db = SqliteDatabase('hyper.fox');
+db = SqliteDatabase('the.fox');
 
 class BaseModel(Model):
     class Meta:
         database = db;
 
 class Block(BaseModel):
-    height = IntegerField(unique = True);
-    time = CharField();
-    txs_n = IntegerField();
-    inner_txs_n = IntegerField();
-    txs = CharField();
+    difficulty = IntegerField();
+    gas_limit = IntegerField();
+    gas_used = IntegerField();
+    hash = CharField(unique = True);
+    number = IntegerField(unique = True);
+    size = IntegerField();
+    timestamp = IntegerField();
+    total_difficulty = IntegerField();
+    transactions = CharField();
     finished = IntegerField();
 
 class Tx(BaseModel):
-    tx_id = CharField(unique = True);
-    height = IntegerField(unique = True);
+    block_hash = IntegerField(unique = True);
+    hash = CharField(unique = True);
     content = CharField();
     finished = IntegerField();
 
@@ -30,5 +34,5 @@ class FoxDB():
     def start(self):
         db.connect();
 
-    def close(self):
+    def close():
         db.close;
