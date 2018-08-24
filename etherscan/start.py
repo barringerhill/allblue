@@ -12,12 +12,16 @@ def fetch_tx(block):
     return block;
 
 def mix_height():
-    local_height = db.Block.select().count();
-    remote_height = int(tx.Block().get_last()[0]);    
+    try:
+        local_height = db.Block.select().count();
+    except:
+        local_height = 0;
 
-    if db.Block.get(db.Block.height == local_height).finished == 1:
-        local_height += 1;
+    remote_height = int(tx.Block().get_last()[0]);
 
+    # if db.Block.get(db.Block().height) == local_height and db.Block.get(db.Block().height).finished == 1:
+    # local_height += 1;
+        
     return (local_height, remote_height);
 
 def store_blocks():
@@ -29,6 +33,7 @@ def store_blocks():
     for i in Bar('Stored Blocks:').iter(range(local_height, remote_height)):
         block = fetch_block(i);
         db.Block.create(
+            id = i,
             height = block.height,
             time = block.time,
             txs_n = block.txs_n,
@@ -39,18 +44,19 @@ def store_blocks():
 
 
 def main():
-    while True:
-        try:
-            store_blocks();
-        except:
-            continue;
+    store_blocks();    
+#     while True:
+#         try:
+#             store_blocks();
+#         except:
+#             continue;
 
-# main();
+main();
 
 # TEST
-def test():
-    t = db.Block.select();
-    for b in t:
-        print(b.txs_n)
-
-test();
+# def test():
+#     t = db.Block.select();
+#     for b in t:
+#         print(b.txs_n)
+# 
+# test();

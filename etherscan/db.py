@@ -7,6 +7,7 @@ class BaseModel(Model):
         database = db;
 
 class Block(BaseModel):
+    id = IntegerField();
     height = IntegerField(unique = True);
     time = CharField();
     txs_n = IntegerField();
@@ -15,6 +16,7 @@ class Block(BaseModel):
     finished = IntegerField();
 
 class Tx(BaseModel):
+    id = IntegerField();
     tx_id = CharField(unique = True);
     height = IntegerField(unique = True);
     content = CharField();

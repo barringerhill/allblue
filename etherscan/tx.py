@@ -79,7 +79,7 @@ class Block:
     def get_last(self):
         api = "https://etherscan.io/";
         html = etree.HTML(r.get(api).text);
-        return html.xpath("//span[@id = 'ContentPlaceHolder1_Label1']//font//text()");
+        return html.xpath("//span[@id='lastblock']//text()");
 
 
 # test

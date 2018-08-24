@@ -1,18 +1,26 @@
+import re;
+import binascii;
 from web3.auto import w3
 
 # Block
 class Block:
+    def __getitem__(self, key):
+        return getattr(self, key);
+
+    def __setitem__(self, key, value):
+        return setattr(self, key, value);
+    
     def __init__(self, number = 0):
         block = w3.eth.getBlock(number);
 
         self.difficulty = block['difficulty'];
-        self.gasLimit = block['gasLimit'];
-        self.gasUsed = block['gasUsed'];
+        self.gas_limit = block['gasLimit'];
+        self.gas_used = block['gasUsed'];
         self.hash = str(block['hash'].hex());
         self.number = number;
         self.size = block['size'];
         self.timestamp = block['timestamp'];
-        self.totalDifficulty = block['totalDifficulty'];
+        self.total_difficulty = block['totalDifficulty'];
         self.txs_n = len(block['transactions'])
 
 # Tx        
@@ -24,30 +32,29 @@ class Tx():
         self.gas = tx['gas']
         self.gas_price = tx['gasPrice'];
         self.hash = str(tx['hash'].hex());
-        self.input = str(tx['input']);
+        self.input = tx['input'];
         self.value = tx['value'] / 1000000000000000000;
 
 
 def batch(number):
     block = w3.eth.getBlock(number);    
     orphan_txs = block['transactions'];
-    wrapped_txs = [];
+    decode_txs = [];
     
     for tx in orphan_txs:
-        wrapped_txs.append(Tx(str(tx.hex())))
-        
-    return wrapped_txs;
+        try:
+            de = Tx(tx).input[2:]
+            sec_de = str(binascii.unhexlify(de), 'utf8', 'ignore');
+            if re.compile('\w').search(sec_de) is not None:
+                print(sec_de);
+                decode_txs.append(sec_de);
+        except:
+            pass;
+
+    return decode_txs;
         
 # test
-def test_block():
-    # block = Block(4000000);
-    tx = Tx('0xb1ed364e4333aae1da4a901d5231244ba6a35f9421d4607f7cb90d60bf45578a');
-    # the_batch = batch(4000000);
-    
-    # print('\n', block.__dict__, '\n\n');
-    print(tx.__dict__);
-    # print(the_batch);
-    # for b in the_batch:
-    #     print(b.input)
+# def test_block():
+#     the = batch(3666666);
 
-test_block();
+# test_block();
