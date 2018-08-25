@@ -44,17 +44,18 @@ def batch(number):
     for tx in orphan_txs:
         try:
             de = Tx(tx).input[2:]
-            sec_de = str(binascii.unhexlify(de), 'utf8', 'ignore');
+            unhex = binascii.unhexlify(de);
+            sec_de = str(unhex, 'utf8', 'ignore');
             if re.compile('\w').search(sec_de) is not None:
-                print(sec_de);
-                decode_txs.append(sec_de);
+                slim_tx = Tx(tx);
+                slim_tx.input = sec_de;
+                decode_txs.append(slim_tx);
         except:
             pass;
 
     return decode_txs;
         
 # test
-# def test_block():
-#     the = batch(3666666);
-
-# test_block();
+# the = batch(6007493);
+# for i in the:
+#     print(i.input);
