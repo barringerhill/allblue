@@ -11,8 +11,8 @@ class Block(BaseModel):
     difficulty = IntegerField();
     gas_limit = IntegerField();
     gas_used = IntegerField();
-    hash = CharField(unique = True);
-    number = IntegerField(unique = True);
+    hash = CharField();
+    number = IntegerField();
     size = IntegerField();
     timestamp = IntegerField();
     total_difficulty = IntegerField();
@@ -21,10 +21,10 @@ class Block(BaseModel):
 
 class Tx(BaseModel):
     # id = IntegerField();
-    block_hash = IntegerField(unique = True);
+    block_hash = IntegerField();
     gas = IntegerField();
     gas_price = IntegerField();
-    hash = CharField(unique = True);
+    hash = CharField();
     input = CharField();
     value = FloatField();
     finished = IntegerField();
