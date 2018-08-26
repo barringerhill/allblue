@@ -1,3 +1,0 @@
-### Snail
-
-FROM GETH API.
