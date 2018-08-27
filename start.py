@@ -37,7 +37,6 @@ def store():
 
     
 def main():
-    # print(get_local_height())
     store();
 
 main();

@@ -38,7 +38,10 @@ def batch(number):
 
         if re.compile('\w').search(sec_de) is None:
             continue;
-         
+
+        if re.compile('\x00').search(sec_de) is not None:
+            continue
+            
         slim_tx = Tx(tx, number);
         slim_tx.input = sec_de;
         decode_txs.append(slim_tx);
