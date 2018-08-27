@@ -25,10 +25,16 @@ class Block:
 
 # Tx        
 class Tx():
+    def __getitem__(self, key):
+        return getattr(self, key);
+
+    def __setitem__(self, key, value):
+        return setattr(self, key, value);
+    
     def __init__(self, _tx):
         tx = w3.eth.getTransaction(_tx);
         
-        self.block_hash = str(tx['blockHash'].hex());
+        self.block_number = tx['number']
         self.gas = tx['gas']
         self.gas_price = tx['gasPrice'];
         self.hash = str(tx['hash'].hex());
@@ -37,21 +43,39 @@ class Tx():
 
 
 def batch(number):
-    block = w3.eth.getBlock(number);    
+    block = w3.eth.getBlock(number);
     orphan_txs = block['transactions'];
     decode_txs = [];
     
     for tx in orphan_txs:
+        # filter Contract Methods
+        if len(w3.eth.getTransactionReceipt(tx).logs) is not 0:
+            continue;
+
+        # filter Contract Creation
+        if w3.eth.getTransactionReceipt(tx).contractAddress is not None:
+            continue;
+
+        # convert hex to ascii;
+        de = Tx(tx, number).input[2:]
+        unhex = binascii.unhexlify(de);
+        
         try:
-            de = Tx(tx).input[2:]
-            unhex = binascii.unhexlify(de);
             sec_de = str(unhex, 'utf8', 'ignore');
-            if re.compile('\w').search(sec_de) is not None:
-                slim_tx = Tx(tx);
-                slim_tx.input = sec_de;
-                decode_txs.append(slim_tx);
         except:
-            pass;
+            continue;
+
+        # filter Zero String
+        if re.compile('\w').search(sec_de) is None:
+            continue;
+
+        # filter Invalid \x00
+        if re.compile('\x00').search(sec_de) is not None:
+            continue
+        
+        slim_tx = Tx(tx);
+        slim_tx.input = sec_de;
+        decode_txs.append(slim_tx);
 
     return decode_txs;
         

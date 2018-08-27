@@ -7,27 +7,23 @@ class BaseModel(Model):
         database = db;
 
 class Block(BaseModel):
-    # id = IntegerField();
+    block_number = IntegerField();    
     difficulty = IntegerField();
     gas_limit = IntegerField();
     gas_used = IntegerField();
     hash = CharField();
-    number = IntegerField();
     size = IntegerField();
     timestamp = IntegerField();
     total_difficulty = IntegerField();
     txs_n = IntegerField();
-    finished = IntegerField();
 
 class Tx(BaseModel):
-    # id = IntegerField();
-    block_hash = IntegerField();
+    block_number = IntegerField();
     gas = IntegerField();
     gas_price = IntegerField();
     hash = CharField();
     input = CharField();
     value = FloatField();
-    finished = IntegerField();
 
 class FoxDB():
 

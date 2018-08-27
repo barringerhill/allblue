@@ -4,12 +4,16 @@ import sync;
 from progress.bar import Bar;
 from web3.auto import w3;
 
-def get_local_height():
+def get_local_height(t):
+
+    table = db.Block if t == "b" else table = db.Tx
+
     try:
-        local_height = db.Block.select().count();
-        if db.Block.get(db.Block.number == local_height).finished == 1:
-            local_height += 1;
-            return local_height
+        last_count = table.select().count();
+        last_query = table.select()[last_count - 1];
+        # if the below query is not completed, panic.
+
+        return last_block.number + 1;
     except:
         return 0;
 
@@ -17,10 +21,10 @@ def store():
     db.FoxDB().init();
     db.FoxDB().start();
 
-    local_height = get_local_height();
-    remote_height = w3.eth.syncing.currentBlock;
-
     arg = input("(b): store block, (t): store txs:   ");
+    
+    local_height = get_local_height(arg);
+    remote_height = w3.eth.syncing.currentBlock;    
 
     if arg == 'b':
         for i in Bar('Stored Blocks:').iter(range(local_height, remote_height)):
@@ -40,9 +44,9 @@ def store():
 
     else:
         for i in Bar('Stored Txs:').iter(range(local_height, remote_height)):
-            tx = sync.batch(i);
+            tx = sync.batch(i, local_height);
             db.Tx.create(
-                block_hash = tx['block_hash'],
+                block_number = tx['block_hash'],
                 gas = tx['gas'],
                 gas_price = tx['gas_price'],
                 hash = tx['hash'],
@@ -50,7 +54,6 @@ def store():
                 value = tx['value'],
                 finished = tx['finished'],
             )
-
     
 def main():
     store();    
