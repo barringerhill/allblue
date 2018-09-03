@@ -10,6 +10,12 @@
 
 #### TODO
 
++ [ ] Unique Content?
+
++ [ ] Add BlockNumber?
+
++ [ ] Mix Rust into python
+
 + [ ] Struct deliver 
 
 + [ ] Read from leveldb directly
