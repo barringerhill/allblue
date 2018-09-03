@@ -5,27 +5,43 @@ from progress.bar import Bar;
 from web3.auto import w3;
 
 def get_local_height(t):
+    table = None;
+    
+    if t == "b":
+        try:
+            table = db.Block                
+            last_count = table.select().count();
+            last_query = table.select()[last_count - 1];
+            # if the below query is not completed, panic.
+            return last_block.number + 1;
+        except:
+            return 0;
+    
+    elif t == "t":
+        try:
+            table = db.Tx;
+            last_count = table.select().count();
+            last_query = table.select()[last_count - 1].hash;
+            print(last_query);
+            last_number = w3.eth.getTransaction(last_query)['blockNumber'];
+            return last_number + 1;
+        except:
+            return 46000;
 
-    table = db.Block if t == "b" else table = db.Tx
-
-    try:
-        last_count = table.select().count();
-        last_query = table.select()[last_count - 1];
-        # if the below query is not completed, panic.
-
-        return last_block.number + 1;
-    except:
+    else:
         return 0;
 
 def store():
     db.FoxDB().init();
     db.FoxDB().start();
 
-    arg = input("(b): store block, (t): store txs:   ");
+    arg = input("(b): store block, (t): store txs: ");
     
     local_height = get_local_height(arg);
     remote_height = w3.eth.syncing.currentBlock;    
 
+    print("local_height: ", local_height);
+    
     if arg == 'b':
         for i in Bar('Stored Blocks:').iter(range(local_height, remote_height)):
             block = sync.Block(i);
@@ -44,17 +60,13 @@ def store():
 
     else:
         for i in Bar('Stored Txs:').iter(range(local_height, remote_height)):
-            tx = sync.batch(i, local_height);
-            db.Tx.create(
-                block_number = tx['block_hash'],
-                gas = tx['gas'],
-                gas_price = tx['gas_price'],
-                hash = tx['hash'],
-                input = tx['input'],
-                value = tx['value'],
-                finished = tx['finished'],
-            )
-    
+            txs = sync.batch(i);
+            for tx in txs:
+                db.Tx.create(
+                    hash = tx['hash'],
+                    input = tx['input'],
+                )
+                
 def main():
     store();    
 

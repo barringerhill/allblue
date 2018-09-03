@@ -6,11 +6,11 @@ db.FoxDB().start();
 
 def insert():
     db.Block.create(
+        number = 1,        
         difficulty = 1,
         gas_limit = 1,
         gas_used = 1,
         hash = 'h',
-        number = 1,
         size = 1,
         timestamp = 1,
         total_difficulty = 1,

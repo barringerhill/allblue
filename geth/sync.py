@@ -33,13 +33,9 @@ class Tx():
     
     def __init__(self, _tx):
         tx = w3.eth.getTransaction(_tx);
-        
-        self.block_number = tx['number']
-        self.gas = tx['gas']
-        self.gas_price = tx['gasPrice'];
+
         self.hash = str(tx['hash'].hex());
         self.input = tx['input'];
-        self.value = tx['value'] / 1000000000000000000;
 
 
 def batch(number):
@@ -57,7 +53,7 @@ def batch(number):
             continue;
 
         # convert hex to ascii;
-        de = Tx(tx, number).input[2:]
+        de = Tx(tx).input[2:]
         unhex = binascii.unhexlify(de);
         
         try:

@@ -7,7 +7,7 @@ class BaseModel(Model):
         database = db;
 
 class Block(BaseModel):
-    block_number = IntegerField();    
+    number = IntegerField();
     difficulty = IntegerField();
     gas_limit = IntegerField();
     gas_used = IntegerField();
@@ -18,13 +18,9 @@ class Block(BaseModel):
     txs_n = IntegerField();
 
 class Tx(BaseModel):
-    block_number = IntegerField();
-    gas = IntegerField();
-    gas_price = IntegerField();
     hash = CharField();
     input = CharField();
-    value = FloatField();
-
+    
 class FoxDB():
 
     def init(self):
