@@ -1,21 +1,10 @@
 
-2 ways 2 exchange data
+3 ways 2 exchange data
 ======================
 
 
 + fetch data from etherscan.io
 
-+ fetch data from geth
++ fetch data from geth-rpc
 
-
-#### TODO
-
-+ [ ] Unique Content?
-
-+ [ ] Add BlockNumber?
-
-+ [ ] Mix Rust into python
-
-+ [ ] Struct deliver 
-
-+ [ ] Read from leveldb directly
++ fetch data from geth.leveldb
