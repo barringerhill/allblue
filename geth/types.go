@@ -1,17 +1,13 @@
 package main;
 
-import (
-	"github.com/ethereum/go-ethereum/common"	
-)
-
 type Transaction struct {
 	Number   uint64
-	Hash     common.Hash
+	Hash     string
 	Data    []byte
 }
 
 type Block struct {
 	Number          uint64
-	Hash            common.Hash
+	Hash            string
 	Transactions    []Transaction
 }

@@ -33,25 +33,38 @@ func (g *Geth)  GetBlock(number uint64) Block {
 
 	var txs []Transaction;
 	for _, tx := range(block.Transactions()) {
+		if g.FliterTx(tx.Hash(), tx.Data()) != true { continue };
 		txs = append(txs, Transaction {
 			Number: number,
-			Hash:   tx.Hash(),
+			Hash:   tx.Hash().Hex(),
 			Data:   tx.Data(),
 		})
 	}
 	
 	return Block{
 		Number:        number,
-		Hash:          hash,
+		Hash:          hash.Hex(),
 		Transactions:  txs,
 	}	
 }
 
-func (g *Geth) FliterTx(hash common.Hash) bool {
+func (g *Geth) FliterTx(hash common.Hash, data []byte) bool {
+	var (emptyHex = "0x0000000000000000000000000000000000000000";)
+	
+	// Receipt
 	receipt, _, _, _ := rawdb.ReadReceipt(g.database, hash);
 	logs,  contract_address := receipt.Logs, receipt.ContractAddress
-	fmt.Printf("Logs: %v\n", logs);
-	fmt.Printf("Contract Address: %x\n", contract_address);
 
+	// Fliter Contract
+	if len(logs) != 0 { return false };
+	if contract_address.Hex() != emptyHex {return false };
+
+	// Fliter Data
+	if len(data) == 0 { return false };
+	for _, b := range(data){
+		if b <= 21 { return false}
+	}
+	fmt.Printf("Data: %v;\nLength: %v\n", data, len(string(data[:])));
+	fmt.Printf("Data String: %x\n, Hash: %x\n", data, hash);
 	return true;
 }
