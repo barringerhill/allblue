@@ -1,10 +1,4 @@
-### GET DATA FROM LEVELDB
-
-### TODO
-
-+ [ ] Format
-+ [ ] Fliter
-+ [ ] PSQL Interface
+## ALLBLUE - GETH
 
 
 ### Struct
