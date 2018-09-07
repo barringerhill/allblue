@@ -26,7 +26,7 @@ type Geth struct{
 
 func New(datadir string) *Geth {
 	db, err := ethdb.NewLDBDatabase(datadir, 768, 16);
-	assert(err); 
+	assert(err);
 
 	return &Geth{ Database: db, DataDir: datadir };
 }
@@ -69,9 +69,14 @@ func (g *Geth) FliterTx(hash common.Hash, data []byte) bool {
 
 	// Fliter Data Checkpoint 2
 	for _, b := range(data) { if b < 10 { return false; } }
+
+	// Fliter Data Checkpoint 3
 	matched, err := regexp.MatchString(`\w`, string(data[:]));
-	if err != nil { return false; }
-	if matched == false { return false; }
+	assert(err); if matched == false { return false; }
+
+	// Fliter Data Checkpoint 4
+	matched, err = regexp.MatchString(`^[A-Z0-9]*$`, string(data[:]));
+	assert(err); if matched == true { return false; }
 
 	return true;
 }
