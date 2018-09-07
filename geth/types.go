@@ -1,9 +1,13 @@
-package main;
+//
+// @udtrokia
+//
+
+package allblue;
 
 type Transaction struct {
 	Number   uint64
 	Hash     string
-	Data    []byte
+	Data     []byte
 }
 
 type Block struct {

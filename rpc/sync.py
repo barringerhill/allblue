@@ -44,11 +44,11 @@ def batch(number):
     decode_txs = [];
     
     for tx in orphan_txs:
-        # filter Contract Methods
+        #// filter Contract Methods
         if len(w3.eth.getTransactionReceipt(tx).logs) is not 0:
             continue;
 
-        # filter Contract Creation
+        #// filter Contract Creation
         if w3.eth.getTransactionReceipt(tx).contractAddress is not None:
             continue;
 
@@ -61,11 +61,11 @@ def batch(number):
         except:
             continue;
 
-        # filter Zero String
+        #// filter Zero String
         if re.compile('\w').search(sec_de) is None:
             continue;
 
-        # filter Invalid \x00
+        #// filter Invalid \x00
         if re.compile('\x00').search(sec_de) is not None:
             continue
         
