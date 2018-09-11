@@ -1,7 +1,6 @@
 //
 // @udtrokia
 //
-
 package main;
 
 import (
@@ -18,7 +17,7 @@ import (
 type Tx struct {
 	Number  uint64  `gorm:"not null;"`
 	Hash    string  `gorm:"not null;"`
-	Data    string  `gorm:"not null;unique;unique_index;"`
+	Data    string  `gorm:"not null;unique;"`
 }
 
 var (
@@ -33,26 +32,22 @@ func main() {
 	defer geth.Database.Close();
 	
 	// PostgreSQL
-	pg, err := gorm.Open("postgres", "host=127.0.0.1 port=5432 dbname=edata sslmode=disable");
+	pg, err := gorm.Open("postgres", "host=127.0.0.1 port=5432 dbname=allblue sslmode=disable");
 	if err != nil { panic(err) }; defer pg.Close();
-
+	
 	pg.AutoMigrate(&Tx{});
 	pg.LogMode(false);
-
+	
 	// -------
 	var _tx Tx;
 	ch := make(chan int, 1000)
 	pg.Raw("select MAX(number) number from txes;").Scan(&_tx);
-	fmt.Printf("Last pointer: %v\n", _tx.Number);	
+	fmt.Printf("Last pointer: %v\n", _tx.Number);
 	for ptr := _tx.Number; ; ptr ++ {
-		defer func(){
-			if r:= recover(); r != nil {
-				fmt.Printf("\rRecover: %s:\n", r);
-			}
-		}()
+	 	defer func(){ if r:= recover(); r != nil {} }()
 		ch <- 1
-		go insertTxs(ptr, pg, ch);
-		fmt.Printf("\rSync Block: %v", ptr);
+	 	go insertTxs(ptr, pg, ch);
+	 	fmt.Printf("\rSync Block: %v/6000000   ", ptr);
 	}
 }
 

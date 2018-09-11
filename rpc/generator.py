@@ -18,12 +18,8 @@ def insert():
     );
 
     db.Tx.create(
-        block_number = 1,
-        gas = 1,
-        gas_price = 1,
         hash = 'hash',
         input = 'input',
-        value = '1.00',
     )
     print("Insert Succeed!")
 

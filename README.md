@@ -18,4 +18,8 @@
 
 + Empty String && Invalid `\x00`
 
++ UTF-8
+
++ ^\w, ^\s
+
 + Duplicate

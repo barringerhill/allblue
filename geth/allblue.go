@@ -6,7 +6,6 @@ package allblue;
 
 import 	(
 	"regexp"
-	"unicode/utf8"
 
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/common"
@@ -38,13 +37,13 @@ func (g *Geth) GetBlock(number uint64) Block {
 	var txs []Transaction;
 	for _, tx := range(block.Transactions()) {
 		if g.FliterTx(tx.Hash(), tx.Data()) != true { continue };
+
 		txs = append(txs, Transaction {
 			Number: number,
 			Hash:   tx.Hash().Hex(),
 			Data:   tx.Data(),
 		})
 	}
-
 	return Block{
 		Number:        number,
 		Hash:          hash.Hex(),
@@ -53,30 +52,32 @@ func (g *Geth) GetBlock(number uint64) Block {
 }
 
 func (g *Geth) FliterTx(hash common.Hash, data []byte) bool {
-    	//var (emptyHex = "0x0000000000000000000000000000000000000000";)
-	//
-	//// Get Receipt
-	//receipt, _, _, _ := rawdb.ReadReceipt(g.Database, hash);
-	//logs,  contract_address := receipt.Logs, receipt.ContractAddress;
-	//
-	//// Fliter Contract
-	//if len(logs) != 0 { return false }
-	//if contract_address.Hex() != emptyHex {return false; }
+    	// var (emptyHex = "0x0000000000000000000000000000000000000000";)
+	
+	// Get Receipt
+	// receipt, _, _, _ := rawdb.ReadReceipt(g.Database, hash);
+	// logs,  contract_address := receipt.Logs, receipt.ContractAddress;
+	// Speed uppppp~//
+	
+	// Fliter Contract
+	// if len(logs) != 0 { return false }
+	// if contract_address.Hex() != emptyHex {return false; }
 
-	// Fliter Data Checkpoint 1
-	if len(string(data[:])) == 0 { return false; }
-	if utf8.Valid(data) == false { return false; }
+	// Fliter Data Checkpoint 1 //
+	// if len(string(data[:])) == 0 { return false; }
+	// if utf8.Valid(data) == false { return false; }
+	// Database will filter them //
 
 	// Fliter Data Checkpoint 2
-	for _, b := range(data) { if b < 10 { return false; } }
+	// for _, b := range(data) { if b < 10 { return false; } }
 
 	// Fliter Data Checkpoint 3
 	matched, err := regexp.MatchString(`\w`, string(data[:]));
 	assert(err); if matched == false { return false; }
 
 	// Fliter Data Checkpoint 4
-	matched, err = regexp.MatchString(`^[A-Z0-9]*$`, string(data[:]));
-	assert(err); if matched == true { return false; }
+	matched, err = regexp.MatchString(` `, string(data[:]));
+	assert(err); if matched == false { return false; }
 
 	return true;
 }
