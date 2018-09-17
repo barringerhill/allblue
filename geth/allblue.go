@@ -52,30 +52,12 @@ func (g *Geth) GetBlock(number uint64) Block {
 }
 
 func (g *Geth) FliterTx(hash common.Hash, data []byte) bool {
-    	// var (emptyHex = "0x0000000000000000000000000000000000000000";)
-	
-	// Get Receipt
-	// receipt, _, _, _ := rawdb.ReadReceipt(g.Database, hash);
-	// logs,  contract_address := receipt.Logs, receipt.ContractAddress;
-	// Speed uppppp~//
-	
-	// Fliter Contract
-	// if len(logs) != 0 { return false }
-	// if contract_address.Hex() != emptyHex {return false; }
 
-	// Fliter Data Checkpoint 1 //
-	// if len(string(data[:])) == 0 { return false; }
-	// if utf8.Valid(data) == false { return false; }
-	// Database will filter them //
-
-	// Fliter Data Checkpoint 2
-	// for _, b := range(data) { if b < 10 { return false; } }
-
-	// Fliter Data Checkpoint 3
+	// Fliter Data Checkpoint 1
 	matched, err := regexp.MatchString(`\w`, string(data[:]));
 	assert(err); if matched == false { return false; }
 
-	// Fliter Data Checkpoint 4
+	// Fliter Data Checkpoint 2
 	matched, err = regexp.MatchString(` `, string(data[:]));
 	assert(err); if matched == false { return false; }
 

@@ -23,3 +23,5 @@
 + ^\w, ^\s
 
 + Duplicate
+
+/// Try to reduce the these steps by using database.
